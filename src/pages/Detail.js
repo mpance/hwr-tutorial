@@ -1,35 +1,29 @@
 import React from 'react';
-import Chance from 'chance';
+import ajax from 'superagent';
 
 class Detail extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		const people = [];
-
-		for (let i = 0; i < 10; i++) {
-			people.push({
-				name: chance.first(),
-				country: chance.country({ full: true })
-			});
-		}
-
-		this.state = { people: people };
+		this.state = { commits: [] };
 	}
 
-	buttonClicked() {
-		const newState = {
-			name: chance.first()
-		};
-
-		this.setState(newState);
+	componentWillMount() {
+		ajax.get('https://api.github.com/repos/facebook/react/commits')
+			.end((error, response) => {
+				if (!error && response) {
+					this.setState({ commits: response.body });
+				} else {
+					console.log('There was an error fetching from Github', error);
+				}
+			}
+		);
 	}
 
     render() {
 	    return (<div> 
-	    	{this.state.people.map((person, index) => (
-	    		<p key={index}>Hello, {person.name} from {person.country}!</p>
+	    	{this.state.commits.map((commit, index) => (
+	    		<p key={index}>Some commit data here!</p>
 	    	))}
 	    	</div>);
 	}
