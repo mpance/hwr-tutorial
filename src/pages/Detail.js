@@ -13,7 +13,11 @@ class Detail extends React.Component {
 	}
 
 	buttonClicked() {
-		this.forceUpdate().bind(this);
+		const newState = {
+			name: chance.first()
+		};
+
+		this.setState(newState);
 	}
 
     render() {
