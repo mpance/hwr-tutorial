@@ -8,40 +8,23 @@ class Detail extends React.Component {
 		this.state = { mode: "commits", commits: [], forks: [], pulls: [] };
 	}
 
+	fetchFeed(type) {
+    ajax.get(`https://api.github.com/repos/facebook/react/${type}`)
+        .end((error, response) => {
+            if (!error && response) {
+                this.setState({ [type]: response.body });
+            } else {
+                console.log(`Error fetching ${type}`, error);
+            }
+        }
+    );
+}
+
 	componentWillMount() {
-		ajax.get('https://api.github.com/repos/facebook/react/commits')
-			.end((error, response) => {
-				if (!error && response) {
-					console.log("Commits:", response.body);
-					this.setState({ commits: response.body });
-				} else {
-					console.log('There was an error fetching from Github', error);
-				}
-			}
-		)
-
-		ajax.get('https://api.github.com/repos/facebook/react/forks')
-			.end((error, response) => {
-				if (!error && response) {
-					console.log("Forks:", response.body);
-					this.setState({ forks: response.body });
-				} else {
-					console.log('There was an error fetching from Github', error);
-				}
-			}
-		)
-
-		ajax.get('https://api.github.com/repos/facebook/react/pulls')
-			.end((error, response) => {
-				if (!error && response) {
-					console.log("Pulls:", response.body);
-					this.setState({ pulls: response.body });
-				} else {
-					console.log('There was an error fetching from Github', error);
-				}
-			}
-		)
-	}
+    this.fetchFeed('commits');
+    this.fetchFeed('forks');
+    this.fetchFeed('pulls');
+}
 
 	renderCommits() {
     return this.state.commits.map((commit, index) => {
@@ -76,16 +59,8 @@ class Detail extends React.Component {
     });
 	}
 
-	showCommits() {
-    this.setState({ mode: 'commits' });
-	}
-
-	showForks() {
-	    this.setState({ mode: 'forks' });
-	}
-
-	showPulls() {
-	    this.setState({ mode: 'pulls' });
+	selectMode(mode) {
+		this.setState({ mode });
 	}
 
   render() {
@@ -99,9 +74,9 @@ class Detail extends React.Component {
   		content = this.renderPulls();
   	}
     return (<div>
-			<button type="button" onClick={this.showCommits.bind(this)}>Commits</button>
-			<button type="button" onClick={this.showForks.bind(this)}>Forks</button>
-			<button type="button" onClick={this.showPulls.bind(this)}>Pulls</button>
+			<button type="button" onClick={this.selectMode.bind(this, 'commits')}>Commits</button>
+			<button type="button" onClick={this.selectMode.bind(this, 'forks')}>Forks</button>
+			<button type="button" onClick={this.selectMode.bind(this, 'pulls')}>Pulls</button>
 			{content}
 		</div>);
 	}
