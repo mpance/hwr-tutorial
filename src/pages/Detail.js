@@ -18,13 +18,13 @@ class Detail extends React.Component {
             }
         }
     );
-}
+	}
 
 	componentWillMount() {
     this.fetchFeed('commits');
     this.fetchFeed('forks');
     this.fetchFeed('pulls');
-}
+	}
 
 	renderCommits() {
     return this.state.commits.map((commit, index) => {
