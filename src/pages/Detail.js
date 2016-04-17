@@ -1,6 +1,6 @@
 import React from 'react';
 import ajax from 'superagent';
-import { Link } from 'react-router';
+import { IndexLink, Link } from 'react-router';
 
 class Detail extends React.Component {
 
@@ -10,7 +10,7 @@ class Detail extends React.Component {
 	}
 
 	fetchFeed(type) {
-    ajax.get(`https://api.github.com/repos/facebook/react/${type}`)
+    ajax.get(`https://api.github.com/repos/facebook/${this.props.params.repo}/${type}`)
         .end((error, response) => {
             if (!error && response) {
                 this.setState({ [type]: response.body });
@@ -75,6 +75,7 @@ class Detail extends React.Component {
   		content = this.renderPulls();
   	}
     return (<div>
+    	<p><IndexLink to="/" activeClassName="active">Home</IndexLink> > {this.props.params.repo}</p>
 			<button type="button" onClick={this.selectMode.bind(this, 'commits')}>Commits</button>
 			<button type="button" onClick={this.selectMode.bind(this, 'forks')}>Forks</button>
 			<button type="button" onClick={this.selectMode.bind(this, 'pulls')}>Pulls</button>
